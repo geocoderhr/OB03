@@ -46,9 +46,15 @@ class Animal:
         # Абстрактный метод, который должен быть реализован в подклассах
         pass
 
+
+    def __str__(self):
+        return f"Имя: {self.name}, Возраст: {self.age}"
+
     def eat(self):
         # Метод для вывода информации о том, что животное ест
         print(f"{self.name} ест.")
+
+
 
 # Подкласс Bird, наследующий от Animal
 class Bird(Animal):
@@ -105,12 +111,26 @@ class Veterinarian:
 
     def heal_animal(self, animal):
         # Склоняем имя животного в винительный падеж для корректного отображения
-        animal_name_declined = decline_word(animal.name, 'accs')
+        animal_name_declined = decline_word(animal.name, 'gent')
         print(f"{self.name} лечит {animal_name_declined}.")
 
 class Cleaner:
     def __init__(self, name):
         self.name = name
+
+    def cleaning_animal(self,animal):
+        # Склоняем имя животного в винительный падеж для корректного отображения
+        animal_name_declined = decline_word(animal.name, 'gent')
+        print(f"{self.name} чистит клетки {animal_name_declined}")
+
+    def cleaning_cages(self, animals):
+        """
+        Метод для чистки клеток всех животных.
+        Принимает список животных и выводит сообщение для каждого.
+        """
+        for animal in animals:
+            animal_name_declined = decline_word(animal.name, 'gent')
+            print(f"{self.name} чистит клетку для {animal_name_declined}.")
 
 # Класс Zoo, использующий композицию для хранения информации о животных и сотрудниках,
 # а также предоставляющий методы для сохранения и загрузки состояния зоопарка
@@ -136,6 +156,13 @@ class Zoo:
             pickle.dump(self, file)
         print("Состояние зоопарка сохранено в файл.")
 
+    def display_animals(self):
+        print("Список животных в зоопарке:")
+        for animal in self.animals:
+            print(animal)
+
+
+
     @classmethod
     def load_state(cls, filename):
         # Класс-метод для загрузки состояния зоопарка из файла
@@ -150,6 +177,7 @@ if __name__ == "__main__":
     parrot = Bird("Попугай", 2, wing_span=0.5)
     lion = Mammal("Лев", 5, fur_color="золотой")
     snake = Reptile("Змея", 3, scale_type="гладкие")
+
 
     # Демонстрация полиморфизма: вызываем метод make_sound() для каждого животного
     animals = [parrot, lion, snake]
@@ -168,11 +196,13 @@ if __name__ == "__main__":
 
     zoo.add_employee(keeper)
     zoo.add_employee(vet)
+    zoo.add_employee(clean)
 
     # Вызов специфичных методов сотрудников:
     # Теперь имя животного склоняется в винительном падеже (например, "Лев" -> "Льва")
     keeper.feed_animal(lion)  # Выведет: "Алиса кормит Льва."
-    vet.heal_animal(snake)    # Выведет: "Боб лечит Змею."
+    vet.heal_animal(snake)  # Выведет: "Боб лечит Змею."
+    clean.cleaning_cages(zoo.animals)
 
     # Сохранение состояния зоопарка в файл "zoo_state.pkl"
     zoo.save_state("zoo_state.pkl")
